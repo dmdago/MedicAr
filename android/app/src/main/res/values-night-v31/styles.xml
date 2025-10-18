@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Android 12+ Dark Mode (API 31+) -->
+    <!-- Android 12+ Dark Mode (API 31+) - Splash nativo blanco sin ícono -->
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
-        <!-- Fondo del splash -->
-        <!-- Ícono del splash (tu logo) -->
-        <!-- Duración de la animación del ícono (opcional) -->
-        <item name="android:windowSplashScreenAnimationDuration">500</item>
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowSplashScreenBackground">#FFFFFF</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@drawable/android12splash</item>
+        <!-- Sin ícono en el splash de Android 12+ -->
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
