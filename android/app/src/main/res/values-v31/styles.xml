@@ -13,6 +13,6 @@
         <item name="android:windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+        <item name="android:windowBackground">#1479FF</item>
     </style>
 </resources>

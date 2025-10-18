@@ -76,7 +76,7 @@ class _SplashScreenState extends State<SplashScreen>
     final imageSize = screenWidth * AppConstants.splashLogoSizePercent;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xFF1479FF),
       body: Center(
         child: AnimatedBuilder(
           animation: _animationController,
