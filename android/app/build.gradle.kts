@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.medicar"
-    compileSdk = 34
+    compileSdk = 34  // ← Volvemos a 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

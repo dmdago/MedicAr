@@ -10,13 +10,99 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Onboarding App',
+      title: 'MedicAr',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const OnboardingScreen(), // Ir directo al onboarding
+      home: const SplashScreen(), // Inicia con splash custom
       debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+// SPLASH SCREEN CUSTOM
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Configurar animaciones
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    // Iniciar animación
+    _controller.forward();
+
+    // Navegar al onboarding después de 3 segundos
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+            const OnboardingScreen(),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 500),
+          ),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFFFFF), // Color de tu marca
+      body: Center(
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                 Image.asset(
+                   'assets/images/splash.png',
+                   width: 200,
+                   height: 200,
+                 ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -36,7 +122,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final List<OnboardingData> _pages = [
     OnboardingData(
       title: 'Bienvenido',
-      description: 'Descubre una nueva forma de gestionar tu día a día',
+      description: 'Descubre una nueva forma de gestionar tu salud',
       icon: Icons.waving_hand,
       color: Colors.blue,
     ),
@@ -243,7 +329,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             const Text(
-              '¡Bienvenido a la app!',
+              '¡Bienvenido a MedicAr!',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
