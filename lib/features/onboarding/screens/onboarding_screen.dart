@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/constants/app_constants.dart';
 import '../models/onboarding_data.dart';
 import '../providers/onboarding_provider.dart';
@@ -22,20 +23,42 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final currentPage = ref.watch(currentPageProvider);
     final isLastPage = ref.watch(isLastPageProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            _buildSkipButton(),
-            _buildPageView(),
-            const SizedBox(height: 20),
-            PageIndicator(
-              currentPage: currentPage,
-              pages: _pages,
+            // SVG de fondo en la parte inferior
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: SvgPicture.asset(
+                'assets/images/onbbg.svg',
+                width: screenWidth,
+                fit: BoxFit.fitWidth,
+                alignment: Alignment.bottomCenter,
+                colorFilter: ColorFilter.mode(
+                  _pages[currentPage].bgColor,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
-            const SizedBox(height: 40),
-            _buildNavigationButton(isLastPage, currentPage),
+            // Contenido principal
+            Column(
+              children: [
+                _buildSkipButton(),
+                _buildPageView(),
+                const SizedBox(height: 20),
+                PageIndicator(
+                  currentPage: currentPage,
+                  pages: _pages,
+                ),
+                const SizedBox(height: 40),
+                _buildNavigationButton(isLastPage, currentPage),
+              ],
+            ),
           ],
         ),
       ),
