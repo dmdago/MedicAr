@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Configura la UI overlay (barra de estado transparente)
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+
   runApp(const MyApp());
 }
 
@@ -15,99 +26,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const SplashScreen(), // Inicia con splash custom
+      home: const OnboardingScreen(), // Directo al onboarding
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
-// SPLASH SCREEN CUSTOM
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Configurar animaciones
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
-
-    // Iniciar animación
-    _controller.forward();
-
-    // Navegar al onboarding después de 3 segundos
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-            const OnboardingScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 500),
-          ),
-        );
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF), // Color de tu marca
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnimation,
-          child: ScaleTransition(
-            scale: _scaleAnimation,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                 Image.asset(
-                   'assets/images/splash.png',
-                   width: 200,
-                   height: 200,
-                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// Onboarding Screen
+// ONBOARDING SCREEN
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
@@ -135,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     OnboardingData(
       title: 'Comienza Ahora',
       description: '¡Estás listo para empezar esta aventura!',
-      icon: Icons.rocket,
+      icon: Icons.rocket_launch,
       color: Colors.orange,
     ),
   ];
@@ -248,7 +173,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
-// Onboarding Page Widget
+// ONBOARDING PAGE WIDGET
 class OnboardingPage extends StatelessWidget {
   final OnboardingData data;
 
@@ -291,7 +216,7 @@ class OnboardingPage extends StatelessWidget {
   }
 }
 
-// Onboarding Data Model
+// ONBOARDING DATA MODEL
 class OnboardingData {
   final String title;
   final String description;
@@ -306,7 +231,7 @@ class OnboardingData {
   });
 }
 
-// Home Screen (pantalla principal después del onboarding)
+// HOME SCREEN
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
