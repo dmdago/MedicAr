@@ -123,14 +123,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                       width: imageSize,
                       height: imageSize,
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) {
-                        // Si la imagen no existe, muestra un ícono
-                        return Icon(
-                          Icons.medical_services,
-                          size: imageSize,
-                          color: Colors.blue.shade400,
-                        );
-                      },
                     ),
                   ],
                 ),
