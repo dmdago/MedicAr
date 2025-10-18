@@ -11,7 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^2.6.1  # ← Agregar
+  flutter_riverpod: ^2.6.1
+  flutter_svg: ^2.0.10
 
 dev_dependencies:
   flutter_test:
@@ -24,11 +25,11 @@ flutter:
     - assets/images/
   uses-material-design: true
 
-# Solo configuración del ÍCONO (el splash será custom en Flutter)
+# Configuración del ícono con color de fondo personalizado
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/splash.png"
-  adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "assets/images/splash.png"
+  image_path: "assets/images/logo_white.png"  # ← Necesitas convertir tu SVG a PNG para el ícono
+  adaptive_icon_background: "#1479FF"  # ← Color de fondo azul
+  adaptive_icon_foreground: "assets/images/logo_foreground.png"  # ← Tu SVG convertido a PNG
   remove_alpha_ios: true
