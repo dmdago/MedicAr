@@ -17,16 +17,30 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.4.0
 
 flutter:
   assets:
     - assets/images/
   uses-material-design: true
 
+# Configuración del ÍCONO de la app (aparece en el launcher)
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/splash.png"
+  image_path: "assets/images/splash.png"  # ← Ícono de la app
   adaptive_icon_background: "#FFFFFF"
   adaptive_icon_foreground: "assets/images/splash.png"
   remove_alpha_ios: true
+
+# Configuración del SPLASH SCREEN (pantalla de carga)
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/splash.png  # ← Imagen del splash
+
+  android_12:
+    image: assets/images/splash.png
+    color: "#FFFFFF"
+
+  android: true
+  ios: true

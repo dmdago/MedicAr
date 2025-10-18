@@ -1,14 +1,13 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.example.medicar"
-    compileSdk = 34  // ← Volvemos a 34
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35  // ← Cambia de 34 a 35
+    ndkVersion = "27.0.12077973"  // ← Agrega o actualiza esta línea
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -21,26 +20,15 @@ android {
 
     defaultConfig {
         applicationId = "com.example.medicar"
-
-        // API mínima: Android 8.0 (Oreo) - Cubre ~95% de dispositivos
         minSdk = 26
-
-        // API objetivo: Android 14 - Requisito de Google Play
-        targetSdk = 34
-
+        targetSdk = 35  // ← Cambia de 34 a 35
         versionCode = 1
         versionName = "1.0.0"
     }
 
     buildTypes {
         release {
-            // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
-
-            // Optimizaciones para producción (opcional, descomenta cuando estés listo)
-            // minifyEnabled = true
-            // shrinkResources = true
-            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 }

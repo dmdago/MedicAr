@@ -2,16 +2,16 @@
 <resources>
     <!-- Android 12+ (API 31+) -->
     <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
+        <!-- Fondo del splash -->
+        <!-- Ícono del splash (tu logo) -->
+        <!-- Duración de la animación del ícono (opcional) -->
+        <item name="android:windowSplashScreenAnimationDuration">500</item>
         <item name="android:forceDarkAllowed">false</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <!-- Fondo del splash -->
         <item name="android:windowSplashScreenBackground">#FFFFFF</item>
-        <!-- Ícono del splash (tu logo) -->
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <!-- Duración de la animación del ícono (opcional) -->
-        <item name="android:windowSplashScreenAnimationDuration">500</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/android12splash</item>
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
