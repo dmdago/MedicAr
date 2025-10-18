@@ -41,6 +41,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
+
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -97,6 +98,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    // Obtiene el ancho de la pantalla
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Define el tamaño como porcentaje del ancho (por ejemplo, 40%)
+    final imageSize = screenWidth * 0.8; // Cambia 0.4 al porcentaje que quieras
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -110,50 +117,20 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo/Imagen
-                    Container(
-                      width: 180,
-                      height: 180,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.blue.withOpacity(0.3),
-                            blurRadius: 30,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: Image.asset(
-                          'assets/images/splash.png',
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            // Si la imagen no existe, muestra un ícono
-                            return Container(
-                              color: Colors.blue.shade50,
-                              child: Icon(
-                                Icons.medical_services,
-                                size: 100,
-                                color: Colors.blue.shade400,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    // Loading indicator
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 3,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.blue.shade400,
-                        ),
-                      ),
+                    // Logo/Imagen simple
+                    Image.asset(
+                      'assets/images/splash.png',
+                      width: imageSize,
+                      height: imageSize,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        // Si la imagen no existe, muestra un ícono
+                        return Icon(
+                          Icons.medical_services,
+                          size: imageSize,
+                          color: Colors.blue.shade400,
+                        );
+                      },
                     ),
                   ],
                 ),
