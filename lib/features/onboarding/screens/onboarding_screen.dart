@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/app_constants.dart';
 import '../models/onboarding_data.dart';
+import '../providers/onboarding_provider.dart';
 import '../widgets/onboarding_page.dart';
 import '../widgets/page_indicator.dart';
 import '../../home/screens/home_screen.dart';
 
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
   final List<OnboardingData> _pages = OnboardingData.pages;
 
   @override
   Widget build(BuildContext context) {
+    final currentPage = ref.watch(currentPageProvider);
+    final isLastPage = ref.watch(isLastPageProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -27,11 +31,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             _buildPageView(),
             const SizedBox(height: 20),
             PageIndicator(
-              currentPage: _currentPage,
+              currentPage: currentPage,
               pages: _pages,
             ),
             const SizedBox(height: 40),
-            _buildNavigationButton(),
+            _buildNavigationButton(isLastPage, currentPage),
           ],
         ),
       ),
@@ -56,9 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: PageView.builder(
         controller: _pageController,
         onPageChanged: (index) {
-          setState(() {
-            _currentPage = index;
-          });
+          ref.read(currentPageProvider.notifier).state = index;
         },
         itemCount: _pages.length,
         itemBuilder: (context, index) {
@@ -68,23 +70,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  Widget _buildNavigationButton() {
+  Widget _buildNavigationButton(bool isLastPage, int currentPage) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: SizedBox(
         width: double.infinity,
         height: AppConstants.buttonHeight,
         child: ElevatedButton(
-          onPressed: _handleNavigationButton,
+          onPressed: () => _handleNavigationButton(isLastPage),
           style: ElevatedButton.styleFrom(
-            backgroundColor: _pages[_currentPage].color,
+            backgroundColor: _pages[currentPage].color,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
           ),
           child: Text(
-            _isLastPage
+            isLastPage
                 ? AppConstants.onboardingStart
                 : AppConstants.onboardingNext,
             style: const TextStyle(
@@ -97,10 +99,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
-  bool get _isLastPage => _currentPage == _pages.length - 1;
-
-  void _handleNavigationButton() {
-    if (_isLastPage) {
+  void _handleNavigationButton(bool isLastPage) {
+    if (isLastPage) {
       _goToHome();
     } else {
       _pageController.nextPage(

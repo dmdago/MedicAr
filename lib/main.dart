@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';  // ← Agregar
 import 'core/theme/app_theme.dart';
 import 'routes/app_routes.dart';
 import 'features/splash/screens/splash_screen.dart';
@@ -6,7 +7,11 @@ import 'features/splash/screens/splash_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AppTheme.configureSystemUI();
-  runApp(const MyApp());
+  runApp(
+    const ProviderScope(  // ← Envolver con ProviderScope
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
