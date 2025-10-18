@@ -95,31 +95,48 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   Widget _buildNavigationButton(bool isLastPage, int currentPage) {
     return Padding(
-      padding: const EdgeInsets.all(24.0),
-      child: SizedBox(
-        width: double.infinity,
-        height: AppConstants.buttonHeight,
-        child: ElevatedButton(
-          onPressed: () => _handleNavigationButton(isLastPage),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: _pages[currentPage].color,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
+      child: GestureDetector(
+        onTap: () => _handleNavigationButton(isLastPage),
+        child: Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.3),
+                blurRadius: 20,
+                spreadRadius: 5,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          child: Text(
-            isLastPage
-                ? AppConstants.onboardingStart
-                : AppConstants.onboardingNext,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+          child: FutureBuilder<String>(
+            future: _loadAndColorSvg(currentPage),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SvgPicture.string(
+                  snapshot.data!,
+                  width: 64,
+                  height: 64,
+                );
+              }
+              return const SizedBox(width: 64, height: 64);
+            },
           ),
         ),
       ),
     );
+  }
+
+  Future<String> _loadAndColorSvg(int currentPage) async {
+    final svgString = await DefaultAssetBundle.of(context)
+        .loadString('assets/images/onbbutton.svg');
+
+    // Usar bgColor en lugar de color para que coincida con el fondo
+    final colorHex = '#${_pages[currentPage].bgColor.value.toRadixString(16).substring(2, 8)}';
+
+    // Reemplazar 'currentColor' con el color dinámico
+    return svgString.replaceAll('currentColor', colorHex);
   }
 
   void _handleNavigationButton(bool isLastPage) {
