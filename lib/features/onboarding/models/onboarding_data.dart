@@ -18,24 +18,24 @@ class OnboardingData {
   // Data estática
   static List<OnboardingData> get pages => [
     OnboardingData(
-      title: 'Bienvenido',
-      description: 'Descubre una nueva forma de gestionar tu salud',
+      title: 'Medicamentos',
+      description: 'Consultá usos, dosis y presentaciones.',
       imagePath: 'assets/images/onb1.png', // ← Imagen 1
-      color: Colors.blue,
+      color: Color(0xFF1479FF),
       bgColor: Color(0xFF1479FF),
     ),
     OnboardingData(
-      title: 'Fácil de Usar',
-      description: 'Interfaz intuitiva diseñada pensando en ti',
+      title: 'Farmacias',
+      description: 'No sabés que farmacia tenés cerca? Nosotros te ayudamos.',
       imagePath: 'assets/images/onb2.png', // ← Imagen 2
-      color: Colors.green,
+      color: Color(0xFF1D3A62),
       bgColor: Color(0xFF1D3A62),
     ),
     OnboardingData(
-      title: 'Comienza Ahora',
-      description: '¡Estás listo para empezar esta aventura!',
+      title: 'Centros de Salud',
+      description: 'Encontrá el lugar mas cercano donde atenderte.',
       imagePath: 'assets/images/onb3.png', // ← Imagen 3
-      color: Colors.orange,
+      color: Color(0xFFE8425E),
       bgColor: Color(0xFFE8425E),
     ),
   ];
