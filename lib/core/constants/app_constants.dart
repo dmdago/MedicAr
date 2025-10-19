@@ -6,7 +6,7 @@ class AppConstants {
 
   // Sizes
   static const double splashLogoSizePercent = 0.8;
-  static const double onboardingIconSize = 150.0;
+  static const double onboardingImageSize = 250.0; // ← Renombrado de onboardingIconSize
   static const double buttonHeight = 56.0;
 
   // Strings

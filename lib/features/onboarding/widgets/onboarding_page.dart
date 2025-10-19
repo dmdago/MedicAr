@@ -9,17 +9,15 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final imageSize = screenWidth * 0.8; // ← 60% del ancho de pantalla (ajusta este valor)
+
     return Padding(
       padding: const EdgeInsets.all(40.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            data.icon,
-            size: AppConstants.onboardingIconSize,
-            color: data.color,
-          ),
-          const SizedBox(height: 40),
+          // Textos primero
           Text(
             data.title,
             style: TextStyle(
@@ -37,6 +35,14 @@ class OnboardingPage extends StatelessWidget {
               color: Colors.grey.shade600,
             ),
             textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 40),
+          // Imagen debajo de los textos
+          Image.asset(
+            data.imagePath,
+            width: imageSize,
+            height: imageSize,
+            fit: BoxFit.contain,
           ),
         ],
       ),
