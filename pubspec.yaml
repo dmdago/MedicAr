@@ -13,6 +13,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_riverpod: ^2.6.1
   flutter_svg: ^2.0.10
+  http: ^1.2.0  # ← Agregada para API calls
 
 dev_dependencies:
   flutter_test:
@@ -29,7 +30,7 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo_white.png"  # ← Necesitas convertir tu SVG a PNG para el ícono
-  adaptive_icon_background: "#1479FF"  # ← Color de fondo azul
-  adaptive_icon_foreground: "assets/images/logo_foreground.png"  # ← Tu SVG convertido a PNG
+  image_path: "assets/images/logo_white.png"
+  adaptive_icon_background: "#1479FF"
+  adaptive_icon_foreground: "assets/images/logo_foreground.png"
   remove_alpha_ios: true

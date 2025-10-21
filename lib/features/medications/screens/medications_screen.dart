@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/medication.dart';
 import '../widgets/medication_card.dart';
 import '../providers/medication_provider.dart';
+import '../services/medication_service.dart';
 
 class MedicationsScreen extends ConsumerStatefulWidget {
   const MedicationsScreen({Key? key}) : super(key: key);
@@ -19,10 +21,23 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
     super.dispose();
   }
 
+  void _onSearchChanged(String value) {
+    ref.read(searchQueryProvider.notifier).state = value;
+
+    if (value.isEmpty) {
+      ref.read(medicationSearchProvider.notifier).clear();
+    } else if (MedicationService.isValidQuery(value)) {
+      ref.read(medicationSearchProvider.notifier).search(value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final searchQuery = ref.watch(searchQueryProvider);
-    final filteredMedications = ref.watch(filteredMedicationsProvider);
+    final searchResults = ref.watch(medicationSearchProvider);
+
+    // Validar si hay suficientes caracteres
+    final hasValidQuery = MedicationService.isValidQuery(searchQuery);
 
     return Scaffold(
       backgroundColor: const Color(0xFFE8F3FF),
@@ -72,9 +87,7 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
                       ),
                       child: TextField(
                         controller: _searchController,
-                        onChanged: (value) {
-                          ref.read(searchQueryProvider.notifier).state = value;
-                        },
+                        onChanged: _onSearchChanged,
                         decoration: InputDecoration(
                           hintText: 'Ingresa nombre comercial o droga',
                           hintStyle: TextStyle(
@@ -94,7 +107,7 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
                             ),
                             onPressed: () {
                               _searchController.clear();
-                              ref.read(searchQueryProvider.notifier).state = '';
+                              _onSearchChanged('');
                             },
                           )
                               : null,
@@ -150,9 +163,7 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      searchQuery.isEmpty
-                          ? 'Busca un medicamento'
-                          : 'Mostrando resultados para "$searchQuery"',
+                      _getHeaderText(searchQuery, hasValidQuery),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -161,36 +172,10 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
                     ),
                     const SizedBox(height: 16),
                     Expanded(
-                      child: filteredMedications.isEmpty
-                          ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.search_off,
-                              size: 64,
-                              color: Colors.grey.shade300,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              searchQuery.isEmpty
-                                  ? 'Escribe para buscar'
-                                  : 'No se encontraron resultados',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey.shade400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                          : ListView.builder(
-                        itemCount: filteredMedications.length,
-                        itemBuilder: (context, index) {
-                          return MedicationCard(
-                            medication: filteredMedications[index],
-                          );
-                        },
+                      child: _buildContent(
+                        searchQuery,
+                        hasValidQuery,
+                        searchResults,
                       ),
                     ),
                   ],
@@ -199,6 +184,95 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  String _getHeaderText(String query, bool hasValidQuery) {
+    if (query.isEmpty) {
+      return 'Busca un medicamento';
+    } else if (!hasValidQuery) {
+      return 'Escribe al menos 3 caracteres';
+    } else {
+      return 'Mostrando resultados para "$query"';
+    }
+  }
+
+  Widget _buildContent(
+      String query,
+      bool hasValidQuery,
+      AsyncValue<List<Medication>> searchResults,
+      ) {
+    // Mostrar mensaje si no hay suficientes caracteres
+    if (query.isNotEmpty && !hasValidQuery) {
+      return _buildEmptyState(
+        icon: Icons.edit,
+        message: 'Necesitas escribir al menos 3 caracteres',
+      );
+    }
+
+    // Mostrar estado vacío si no hay query
+    if (query.isEmpty || !hasValidQuery) {
+      return _buildEmptyState(
+        icon: Icons.search,
+        message: 'Escribe para buscar medicamentos',
+      );
+    }
+
+    // Mostrar resultados según el estado
+    return searchResults.when(
+      data: (medications) {
+        if (medications.isEmpty) {
+          return _buildEmptyState(
+            icon: Icons.search_off,
+            message: 'No se encontraron resultados',
+          );
+        }
+
+        return ListView.builder(
+          itemCount: medications.length,
+          itemBuilder: (context, index) {
+            return MedicationCard(medication: medications[index]);
+          },
+        );
+      },
+      loading: () => const Center(
+        child: CircularProgressIndicator(
+          color: Color(0xFF1479FF),
+        ),
+      ),
+      error: (err, stack) => _buildEmptyState(
+        icon: Icons.error_outline,
+        message: 'Error al cargar medicamentos',
+        isError: true,
+      ),
+    );
+  }
+
+  Widget _buildEmptyState({
+    required IconData icon,
+    required String message,
+    bool isError = false,
+  }) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 64,
+            color: isError ? Colors.red.shade300 : Colors.grey.shade300,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            message,
+            style: TextStyle(
+              fontSize: 16,
+              color: isError ? Colors.red.shade400 : Colors.grey.shade400,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

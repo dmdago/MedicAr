@@ -1,25 +1,48 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/medication.dart';
+import '../services/medication_service.dart';
 
-// Provider para la lista de medicamentos
-final medicationsProvider = Provider<List<Medication>>((ref) {
-  return Medication.getMockData();
+// Service provider
+final medicationServiceProvider = Provider<MedicationService>((ref) {
+  return MedicationService();
 });
 
 // Provider para la query de búsqueda
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-// Provider para filtrar medicamentos
-final filteredMedicationsProvider = Provider<List<Medication>>((ref) {
-  final medications = ref.watch(medicationsProvider);
-  final query = ref.watch(searchQueryProvider).toLowerCase();
-
-  if (query.isEmpty) {
+// AsyncNotifier para manejar la búsqueda de medicamentos
+class MedicationSearchNotifier extends AsyncNotifier<List<Medication>> {
+  @override
+  Future<List<Medication>> build() async {
     return [];
   }
 
-  return medications.where((medication) {
-    return medication.name.toLowerCase().contains(query) ||
-        medication.type.toLowerCase().contains(query);
-  }).toList();
+  Future<void> search(String query) async {
+    // Validar query (mínimo 3 caracteres sin contar espacios ni símbolos)
+    if (!MedicationService.isValidQuery(query)) {
+      state = const AsyncValue.data([]);
+      return;
+    }
+
+    // Establecer estado de carga
+    state = const AsyncValue.loading();
+
+    try {
+      final service = ref.read(medicationServiceProvider);
+      final results = await service.searchMedications(query: query);
+      state = AsyncValue.data(results);
+    } catch (e, stack) {
+      state = AsyncValue.error(e, stack);
+    }
+  }
+
+  void clear() {
+    state = const AsyncValue.data([]);
+  }
+}
+
+// Provider del notifier
+final medicationSearchProvider =
+AsyncNotifierProvider<MedicationSearchNotifier, List<Medication>>(() {
+  return MedicationSearchNotifier();
 });
