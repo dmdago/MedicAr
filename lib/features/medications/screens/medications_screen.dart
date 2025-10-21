@@ -51,13 +51,22 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
           children: [
             // Header
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 24),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withOpacity(0.3),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: const Text(
                 'Medicamentos',

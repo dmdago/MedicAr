@@ -19,9 +19,15 @@ class Medication {
   factory Medication.fromJson(Map<String, dynamic> json) {
     print('🔧 Parseando medicamento: ${json['nombre']}');
 
+    // Obtener droga y reemplazar "+" por "/"
+    String drugType = json['droga'] ?? json['tipo'] ?? json['type'] ?? 'Sin tipo';
+    if (drugType.contains('+')) {
+      drugType = drugType.replaceAll('+', '/');
+    }
+
     return Medication(
       name: json['nombre'] ?? json['name'] ?? 'Sin nombre',
-      type: json['droga'] ?? json['tipo'] ?? json['type'] ?? 'Sin tipo',
+      type: drugType,
       laboratory: json['laboratorio'] ?? json['laboratory'] ?? 'Sin laboratorio',
       price: _parsePrice(json['precio'] ?? json['price']),
       mrp: _parsePrice(json['precio_pami'] ?? json['mrp'] ?? json['precio_sugerido'] ?? json['precio']),
