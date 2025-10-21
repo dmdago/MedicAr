@@ -22,12 +22,17 @@ class _MedicationsScreenState extends ConsumerState<MedicationsScreen> {
   }
 
   void _onSearchChanged(String value) {
+    print('🔤 Search changed: "$value"');
     ref.read(searchQueryProvider.notifier).state = value;
 
     if (value.isEmpty) {
+      print('🧹 Limpiando resultados (búsqueda vacía)');
       ref.read(medicationSearchProvider.notifier).clear();
     } else if (MedicationService.isValidQuery(value)) {
+      print('🚀 Iniciando búsqueda...');
       ref.read(medicationSearchProvider.notifier).search(value);
+    } else {
+      print('⏳ Esperando más caracteres (actual: $value)');
     }
   }
 

@@ -18,11 +18,16 @@ class MedicationSearchNotifier extends AsyncNotifier<List<Medication>> {
   }
 
   Future<void> search(String query) async {
+    print('🔎 MedicationSearchNotifier.search() llamado con query: "$query"');
+
     // Validar query (mínimo 3 caracteres sin contar espacios ni símbolos)
     if (!MedicationService.isValidQuery(query)) {
+      print('❌ Query inválida (menos de 3 caracteres válidos)');
       state = const AsyncValue.data([]);
       return;
     }
+
+    print('✅ Query válida, iniciando búsqueda...');
 
     // Establecer estado de carga
     state = const AsyncValue.loading();
@@ -30,8 +35,10 @@ class MedicationSearchNotifier extends AsyncNotifier<List<Medication>> {
     try {
       final service = ref.read(medicationServiceProvider);
       final results = await service.searchMedications(query: query);
+      print('✅ Resultados obtenidos: ${results.length} medicamentos');
       state = AsyncValue.data(results);
     } catch (e, stack) {
+      print('❌ Error en búsqueda: $e');
       state = AsyncValue.error(e, stack);
     }
   }

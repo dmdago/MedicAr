@@ -59,7 +59,7 @@ class MedicationCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${medication.name} - Droga',
+                  medication.name,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -76,7 +76,7 @@ class MedicationCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Tipo',
+                  medication.laboratory,
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey.shade500,
@@ -86,22 +86,36 @@ class MedicationCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Text(
-                      '\$${medication.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF1479FF),
-                      ),
+                    Builder(
+                        builder: (context) {
+                          print('🎨 Construyendo precio del medicamento: ${medication.name}');
+                          return Text(
+                            medication.formattedPrice,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF1479FF),
+                            ),
+                          );
+                        }
                     ),
                     const SizedBox(width: 8),
-                    Text(
-                      'MRP \$${medication.mrp.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.red.shade400,
-                        decoration: TextDecoration.lineThrough,
-                      ),
+                    // Siempre mostrar PAMI
+                    Builder(
+                        builder: (context) {
+                          print('🎨 Construyendo PAMI del medicamento: ${medication.name}');
+                          final pamiText = medication.mrp > 0
+                              ? medication.formattedMrp
+                              : '-';
+                          return Text(
+                            'PAMI $pamiText',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF1D3A62),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }
                     ),
                   ],
                 ),

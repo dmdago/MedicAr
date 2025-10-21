@@ -19,11 +19,17 @@ class MedicationService {
         'offset': offset.toString(),
       });
 
+      print('🔍 Buscando medicamentos: $uri');
+      print('📤 Headers: ${ApiConfig.headers}');
+
       // Hacer request
       final response = await http.get(
         uri,
         headers: ApiConfig.headers,
       );
+
+      print('📥 Response status: ${response.statusCode}');
+      print('📥 Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final dynamic jsonData = json.decode(response.body);
@@ -32,6 +38,9 @@ class MedicationService {
         List<dynamic> items;
         if (jsonData is List) {
           items = jsonData;
+        } else if (jsonData is Map && jsonData.containsKey('items')) {
+          items = jsonData['items'] as List;
+          print('📦 Encontrados ${items.length} items en response.items');
         } else if (jsonData is Map && jsonData.containsKey('data')) {
           items = jsonData['data'] as List;
         } else if (jsonData is Map && jsonData.containsKey('remedios')) {
@@ -39,10 +48,13 @@ class MedicationService {
         } else if (jsonData is Map && jsonData.containsKey('results')) {
           items = jsonData['results'] as List;
         } else {
+          print('❌ No se encontró estructura conocida en JSON');
           return [];
         }
 
-        return items.map((item) => Medication.fromJson(item)).toList();
+        final medications = items.map((item) => Medication.fromJson(item)).toList();
+        print('✅ Parseados ${medications.length} medicamentos');
+        return medications;
       } else {
         throw Exception('Error al buscar medicamentos: ${response.statusCode}');
       }
