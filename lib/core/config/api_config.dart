@@ -1,6 +1,6 @@
 class ApiConfig {
-  // Base URL de la API
-  static const String baseUrl = 'http://ponso.app:3000';
+  // Base URL de la API con HTTPS
+  static const String baseUrl = 'https://langosta.app:3000';
 
   // API Key
   static const String apiKey = 'change-me-key';

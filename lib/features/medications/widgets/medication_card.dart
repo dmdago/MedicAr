@@ -9,6 +9,33 @@ class MedicationCard extends StatelessWidget {
     required this.medication,
   }) : super(key: key);
 
+  // Construir URL de imagen solo si hay código de barras válido
+  String? _getImageUrl() {
+    print('🔍 === DEBUG IMAGEN ===');
+    print('Medicamento: ${medication.name}');
+    print('Barcode: ${medication.barcode}');
+    print('ImageUrl: ${medication.imageUrl}');
+
+    try {
+      if (medication.barcode != null && medication.barcode!.isNotEmpty) {
+        final url = 'https://langosta.app:3000/images/remedios/${medication.barcode}.jpg';
+        print('✅ URL construida: $url');
+        return url;
+      }
+
+      if (medication.imageUrl != null && medication.imageUrl!.isNotEmpty) {
+        print('✅ Usando imageUrl: ${medication.imageUrl}');
+        return medication.imageUrl;
+      }
+
+      print('❌ No hay URL de imagen disponible');
+      return null;
+    } catch (e) {
+      print('⚠️ Error construyendo URL: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,31 +52,7 @@ class MedicationCard extends StatelessWidget {
       child: Row(
         children: [
           // Imagen del medicamento
-          Container(
-            width: 80,
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: Colors.blue.shade200,
-                width: 2,
-              ),
-            ),
-            child: medication.imageUrl != null
-                ? ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                medication.imageUrl!,
-                fit: BoxFit.cover,
-              ),
-            )
-                : Icon(
-              Icons.medication,
-              size: 40,
-              color: Colors.blue.shade300,
-            ),
-          ),
+          _buildMedicationImage(),
 
           const SizedBox(width: 16),
 
@@ -86,36 +89,22 @@ class MedicationCard extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Builder(
-                        builder: (context) {
-                          print('🎨 Construyendo precio del medicamento: ${medication.name}');
-                          return Text(
-                            medication.formattedPrice,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF1479FF),
-                            ),
-                          );
-                        }
+                    Text(
+                      medication.formattedPrice,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1479FF),
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    // Siempre mostrar PAMI
-                    Builder(
-                        builder: (context) {
-                          print('🎨 Construyendo PAMI del medicamento: ${medication.name}');
-                          final pamiText = medication.mrp > 0
-                              ? medication.formattedMrp
-                              : '-';
-                          return Text(
-                            'PAMI $pamiText',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF1D3A62),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }
+                    Text(
+                      'PAMI ${medication.mrp > 0 ? medication.formattedMrp : '-'}',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF1D3A62),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -124,6 +113,63 @@ class MedicationCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildMedicationImage() {
+    final imageUrl = _getImageUrl();
+
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.blue.shade200,
+          width: 2,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: imageUrl != null && imageUrl.isNotEmpty
+            ? Image.network(
+          imageUrl,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print('❌ ERROR cargando imagen: $imageUrl');
+            print('Error: $error');
+            return _buildDefaultIcon();
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) {
+              print('✅ Imagen cargada exitosamente: $imageUrl');
+              return child;
+            }
+            print('⏳ Cargando imagen: ${loadingProgress.cumulativeBytesLoaded} / ${loadingProgress.expectedTotalBytes ?? '?'}');
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes!
+                    : null,
+                strokeWidth: 2,
+                color: Colors.blue.shade300,
+              ),
+            );
+          },
+        )
+            : _buildDefaultIcon(),
+      ),
+    );
+  }
+
+  Widget _buildDefaultIcon() {
+    print('🔵 Mostrando ícono por defecto');
+    return Icon(
+      Icons.medication,
+      size: 40,
+      color: Colors.blue.shade300,
     );
   }
 }

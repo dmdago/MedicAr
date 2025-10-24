@@ -5,6 +5,7 @@ class Medication {
   final double price;
   final double mrp;
   final String? imageUrl;
+  final String? barcode;
 
   Medication({
     required this.name,
@@ -13,6 +14,7 @@ class Medication {
     required this.price,
     required this.mrp,
     this.imageUrl,
+    this.barcode,
   });
 
   // Crear desde JSON de la API
@@ -25,6 +27,15 @@ class Medication {
       drugType = drugType.replaceAll('+', '/');
     }
 
+    // Obtener código de barras
+    String? barcode;
+    try {
+      barcode = json['codigo_barra']?.toString();
+      print('📊 Código de barras: $barcode');
+    } catch (e) {
+      print('⚠️ Error obteniendo código de barras: $e');
+    }
+
     return Medication(
       name: json['nombre'] ?? json['name'] ?? 'Sin nombre',
       type: drugType,
@@ -32,6 +43,7 @@ class Medication {
       price: _parsePrice(json['precio'] ?? json['price']),
       mrp: _parsePrice(json['precio_pami'] ?? json['mrp'] ?? json['precio_sugerido'] ?? json['precio']),
       imageUrl: json['imagen'] ?? json['image_url'],
+      barcode: barcode,
     );
   }
 
@@ -107,6 +119,7 @@ class Medication {
       'price': price,
       'mrp': mrp,
       'imageUrl': imageUrl,
+      'barcode': barcode,
     };
   }
 }
