@@ -7,6 +7,7 @@ class ApiConfig {
 
   // Endpoints
   static const String remediosEndpoint = '/remedios';
+  static const String imagesEndpoint = '/images/remedios';
 
   // Parámetros de búsqueda
   static const int defaultLimit = 10;
@@ -18,4 +19,9 @@ class ApiConfig {
     'x-api-key': apiKey,
     'Content-Type': 'application/json',
   };
+
+  // Helper para construir URL de imagen dado un código de barras
+  static String getImageUrl(String barcode) {
+    return '$baseUrl$imagesEndpoint/$barcode.jpg';
+  }
 }

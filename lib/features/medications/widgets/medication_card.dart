@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/medication.dart';
+import '../../../core/config/api_config.dart';
 
 class MedicationCard extends StatelessWidget {
   final Medication medication;
@@ -18,7 +19,7 @@ class MedicationCard extends StatelessWidget {
 
     try {
       if (medication.barcode != null && medication.barcode!.isNotEmpty) {
-        final url = 'https://langosta.app:3000/images/remedios/${medication.barcode}.jpg';
+        final url = ApiConfig.getImageUrl(medication.barcode!);
         print('✅ URL construida: $url');
         return url;
       }
